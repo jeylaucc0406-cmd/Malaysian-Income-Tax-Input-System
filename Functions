@@ -1,0 +1,91 @@
+import pandas as pd
+import os
+
+def verify_user(ic_number, password):
+    """
+
+    Verify user credentials
+    IC number must be 12 digits
+    Password must match last 4 digits of IC
+
+    """
+
+    if len(ic_number) != 12 or not ic_number.isdigit():
+        return False
+
+    return password == ic_number[-4:]
+
+
+def calculate_tax(income,tax_relief):
+    """
+
+    Calculate Malaysian Income Tax
+
+    """
+
+    taxable_income = income - tax_relief
+
+    if taxable_income <= 0:
+        return 0
+
+    tax=0
+
+    if taxable_income <= 5000:
+        tax = 0
+
+    elif taxable_income <= 20000:
+        tax = (taxable_income - 5000) * 0.01
+
+    elif taxable_income <= 35000:
+        tax = 150 + (taxable_income - 20000) * 0.03
+
+    elif taxable_income <= 50000:
+        tax = 600 + (taxable_income - 35000) * 0.06
+
+    elif taxable_income <= 70000:
+        tax = 1500 + (taxable_income - 50000) * 0.11
+
+    elif taxable_income <= 100000:
+        tax = 3700 + (taxable_income - 70000) * 0.19
+
+    elif taxable_income <= 400000:
+        tax = 9400 + (taxable_income - 100000) * 0.25
+
+    elif taxable_income <= 600000:
+        tax = 84400 + (taxable_income - 400000) * 0.26
+
+    elif taxable_income <= 2000000:
+        tax = 136400 + (taxable_income - 600000) * 0.28
+
+    else:
+        tax = 528400 + (taxable_income - 2000000) * 0.30
+
+    return round(tax,2)
+
+
+def save_to_csv(data,filename):
+    """
+
+    Save user data into CSV file
+
+    """
+
+def save_user(data, filename):
+        df = pd.DataFrame([data])
+
+        if os.path.exists(filename):
+            df.to_csv(filename, mode='a', header=False, index=False)
+        else:
+            df.to_csv(filename, mode='w', header=True, index=False)
+
+def read_from_csv(filename):
+    """
+
+    Read tax records from CSV file
+
+    """
+
+    if os.path.exists(filename):
+        return pd.read_csv(filename)
+
+    return None
